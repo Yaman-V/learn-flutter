@@ -47,7 +47,7 @@ Questions:
                       CircleAvatar(
                         radius: 50,
                         backgroundColor: Colors.deepPurple,
-                        child: Text('pfp with CircleAvatar'),
+                        backgroundImage: AssetImage('assets/img-1.png'),
                       ),
                       Positioned(
                         right: 5,
