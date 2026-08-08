@@ -17,9 +17,6 @@ class Class03Main extends StatelessWidget {
   }
 }
 
-// Add a delete action — wire your trailing: Icon(Icons.add_box) (or swap it for a delete icon, your call) to remove that product via setState.
-// Add a minimal DetailScreen (new StatelessWidget, takes a Product in its constructor, displays the name and star count). Wire onTap to Navigator.push to it, passing products[index].
-
 // This is stateful because we change the product list
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -60,12 +57,19 @@ class _HomePageState extends State<HomePage> {
               color: Colors.red,
               alignment: AlignmentDirectional.centerEnd,
               padding: EdgeInsets.all(15),
-
               child: Icon(Icons.delete),
             ),
-            onDismissed: (direction) => setState(() {
-              products.removeAt(index);
-            }),
+
+            onDismissed: (direction) {
+              final removedName = products[index].name;
+              setState(() => products.removeAt(index));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('deleted $removedName successfully.'),
+                  duration: Duration(seconds: 1),
+                ),
+              );
+            },
 
             child: ListTile(
               leading: Icon(Icons.label),
@@ -79,20 +83,46 @@ class _HomePageState extends State<HomePage> {
                     ),
               ),
               trailing: Icon(Icons.add_shopping_cart),
-              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(products[index].name),
-                  duration: Duration(seconds: 1),
-                ),
-              ),
+
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ProductDetailsPage(selectedProduct: products[index]),
+                  ),
+                );
+              },
             ),
           );
         },
-        separatorBuilder: (context, index) => Divider(), //I want the defult
+        separatorBuilder: (context, index) => Divider(),
       ),
+
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.shopping_cart_checkout),
         onPressed: () {},
+      ),
+    );
+  }
+}
+
+class ProductDetailsPage extends StatelessWidget {
+  final Product selectedProduct;
+  const ProductDetailsPage({super.key, required this.selectedProduct});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(selectedProduct.name)),
+      body: Center(
+        child: Card(
+          color: Colors.pinkAccent,
+          child: Text(
+            style: TextStyle(fontSize: 28),
+            'This is ${selectedProduct.name} is rated: ${selectedProduct.starCount}',
+          ),
+        ),
       ),
     );
   }
