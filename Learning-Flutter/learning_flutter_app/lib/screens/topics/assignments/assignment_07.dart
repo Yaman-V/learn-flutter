@@ -3,74 +3,59 @@ import 'package:flutter/material.dart';
 class Assignment07ListView extends StatelessWidget {
   const Assignment07ListView({super.key});
 
-  static const Color royalGreen = Color.fromARGB(255, 2, 69, 52);
+  static const List<String> names = [
+    'Klay Lewis',
+    'Ehsan Woodard',
+    'River Bains',
+    'Toyah Downs',
+    'Tyla Kane',
+    'Marcus Romero',
+    'Farrah Parkes',
+    'John Smith',
+  ];
+
+  String getTeamName(int index) {
+    final teamIndex = (index ~/ 3) % 3;
+    return 'Team ${String.fromCharCode(65 + teamIndex)}';
+  }
+
+  String getInitials(String name) {
+    final words = name.trim().split(RegExp(r'\s+'));
+    if (words.length >= 2) {
+      return '${words[0][0]}${words[1][0]}'.toUpperCase();
+    }
+    return words.isNotEmpty ? words[0][0].toUpperCase() : '';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Assignment-07 : List View')),
-      body: ListView(
-        children: [
-          SizedBox(height: 10),
-          Container(
-            color: const Color.fromARGB(255, 255, 255, 15),
-            child: ListTile(title: Text('Iteam 1')),
-          ),
-          ListTile(
-            leading: Icon(Icons.map_outlined),
-            title: Text('Map'),
-            subtitle: Text('Open Maps'),
-            trailing: Icon(Icons.arrow_forward),
-          ),
-          ListTile(
-            leading: Icon(Icons.photo_album),
-            title: Text('Album'),
-            subtitle: Text('View your Images'),
-            trailing: Icon(Icons.arrow_forward),
-          ),
-          Container(
-            color: const Color.fromARGB(255, 15, 107, 255),
-            child: ListTile(
-              leading: Icon(Icons.star, color: Colors.amberAccent),
-              title: Text('Iteam with Icons'),
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.phone),
-            title: Text('Phone'),
-            subtitle: Text('Make a call'),
-            trailing: Icon(Icons.arrow_forward),
-          ),
-          Container(
-            width: 200,
-            height: 200,
-            child: Image.asset('assets/profile_pic_1.jpg'),
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-            subtitle: Text('Adjust Settings'),
-            trailing: Icon(Icons.arrow_forward),
-          ),
-          Container(
-            color: Colors.lightGreenAccent,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                spacing: 5,
-                children: [
-                  Text('Item with Column', style: TextStyle(fontSize: 20)),
-                  Text(
-                    'Second Text',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+      body: ListView.builder(
+        itemCount: names.length,
+        itemBuilder: (context, index) {
+          final isFirstInTeam = index % 3 == 0;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (isFirstInTeam)
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    getTeamName(index),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ],
+                ),
+              Card(
+                child: ListTile(
+                  leading: CircleAvatar(child: Text(getInitials(names[index]))),
+                  title: Text(names[index]),
+                  trailing: Icon(Icons.arrow_circle_right),
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
