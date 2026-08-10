@@ -5,6 +5,7 @@ import 'package:learning_flutter_app/screens/topics/mini_projects/mini_projects.
 
 // This is the data list of I ever added
 final List<Topic> topics = [
+  // Assignments
   Topic(
     id: 'assignment_05',
     title: 'Drawer',
@@ -23,4 +24,25 @@ final List<Topic> topics = [
     category: Category.assignments,
     builder: (context) => const Assignment07ListView(),
   ),
+
+  // Classes
+  Topic(
+    id: 'class_01',
+    title: 'Hello FLutter!',
+    category: Category.classes,
+    builder: (context) => const Class01PersonalProfile(),
+  ),
+  Topic(
+    id: 'class_02',
+    title: 'Scaffold elements',
+    category: Category.classes,
+    builder: (context) => const Class02(),
+  ),
+  Topic(
+    id: 'class_03',
+    title: 'List View',
+    category: Category.classes,
+    builder: (context) => Class03(),
+  ),
+  // Mini Projects
 ];

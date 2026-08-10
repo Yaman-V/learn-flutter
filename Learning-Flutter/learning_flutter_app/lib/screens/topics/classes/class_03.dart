@@ -8,24 +8,15 @@ class Product {
   Product({required this.name, required this.starCount});
 }
 
-class Class03Main extends StatelessWidget {
-  const Class03Main({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: HomePage(), debugShowCheckedModeBanner: false);
-  }
-}
-
 // This is stateful because we change the product list
-class HomePage extends StatefulWidget {
-  HomePage({super.key});
+class Class03 extends StatefulWidget {
+  Class03({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Class03> createState() => _Class03State();
 }
 
-class _HomePageState extends State<HomePage> {
+class _Class03State extends State<Class03> {
   final List<Product> products = [
     Product(name: 'Coffee', starCount: 5),
     Product(name: 'PS5', starCount: 2),
