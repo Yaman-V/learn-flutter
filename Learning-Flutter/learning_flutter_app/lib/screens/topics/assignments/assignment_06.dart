@@ -1,50 +1,24 @@
+// screens/topics/assignments/assignment_06_profile.dart
 import 'package:flutter/material.dart';
 
-class Assignment06 extends StatelessWidget {
-  const Assignment06({super.key});
-
-  static const Color royalGreen = Color.fromARGB(255, 2, 69, 52);
+class Assignment06Profile extends StatefulWidget {
+  const Assignment06Profile({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: false,
-        colorScheme: ColorScheme.fromSeed(seedColor: royalGreen),
-        scaffoldBackgroundColor: const Color(0xFF1C1C1C),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: royalGreen,
-          foregroundColor: Colors.white,
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: royalGreen,
-          foregroundColor: Colors.white,
-        ),
-      ),
-      home: const HomePage(),
-    );
-  }
+  State<Assignment06Profile> createState() => _Assignment06ProfileState();
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+class _Assignment06ProfileState extends State<Assignment06Profile> {
   int _experienceLevel = 0;
+
+  static const Color labelColor = Colors.grey;
+  static const Color valueColor = Color(0xFFF2B01E); // gold/yellow accent
 
   void _incrementLevel() {
     setState(() {
       _experienceLevel++;
     });
   }
-
-  static const Color labelColor = Colors.grey;
-  static const Color valueColor = Color(0xFFF2B01E); // gold/yellow accent
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +34,7 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: true,
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: Column(
@@ -69,11 +44,13 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 width: 130,
                 height: 130,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white24, width: 1),
-                  image: const DecorationImage(
-                    image: const AssetImage("assets/img-1.png"),
+                  border: Border.fromBorderSide(
+                    BorderSide(color: Colors.white24, width: 1),
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage("assets/profile_pic_1.jpg"),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -125,13 +102,9 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 24),
             Row(
-              children: [
-                const Icon(
-                  Icons.email_outlined,
-                  color: Colors.white70,
-                  size: 20,
-                ),
-                const SizedBox(width: 10),
+              children: const [
+                Icon(Icons.email_outlined, color: Colors.white70, size: 20),
+                SizedBox(width: 10),
                 Text(
                   'email_example@gmail.com',
                   style: TextStyle(color: Colors.white, fontSize: 16),

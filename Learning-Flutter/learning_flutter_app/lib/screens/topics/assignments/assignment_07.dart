@@ -1,34 +1,9 @@
 import 'package:flutter/material.dart';
 
-class Assignment07 extends StatelessWidget {
-  const Assignment07({super.key});
+class Assignment07ListView extends StatelessWidget {
+  const Assignment07ListView({super.key});
 
   static const Color royalGreen = Color.fromARGB(255, 2, 69, 52);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: false,
-        colorScheme: ColorScheme.fromSeed(seedColor: royalGreen),
-        scaffoldBackgroundColor: const Color.fromARGB(255, 231, 227, 227),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: royalGreen,
-          foregroundColor: Colors.white,
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: royalGreen,
-          foregroundColor: Colors.white,
-        ),
-      ),
-      home: const HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
