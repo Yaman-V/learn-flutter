@@ -44,5 +44,12 @@ final List<Topic> topics = [
     category: Category.classes,
     builder: (context) => Class03(),
   ),
+  Topic(
+    id: 'class_04',
+    title: 'Animations and Forms',
+    category: Category.classes,
+    builder: (context) => Class04(),
+  ),
+
   // Mini Projects
 ];
