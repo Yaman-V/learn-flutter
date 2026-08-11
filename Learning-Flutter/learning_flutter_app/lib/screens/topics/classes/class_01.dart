@@ -1,25 +1,8 @@
 import 'package:flutter/material.dart';
 
-class Class01 extends StatelessWidget {
-  const Class01({super.key});
+class Class01PersonalProfile extends StatelessWidget {
+  const Class01PersonalProfile({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Class-01 : Personal Profile',
-      // This removes the debug banner
-      debugShowCheckedModeBanner: false,
-      home: Home(),
-    );
-  }
-}
-
-class Home extends StatelessWidget {
-  const Home({super.key});
-  /*
-Questions: 
-
-*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +11,7 @@ Questions:
           'Pesonal Profile',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: const Color.fromARGB(255, 100, 183, 58),
       ),
 
       body: SafeArea(

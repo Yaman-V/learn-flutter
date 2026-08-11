@@ -6,21 +6,6 @@ class Class02 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: HomePage(),
-      title: 'Scaffold elements',
-      // impotred date from google
-      theme: ThemeData(textTheme: GoogleFonts.coinyTextTheme()),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scaffold elements'),

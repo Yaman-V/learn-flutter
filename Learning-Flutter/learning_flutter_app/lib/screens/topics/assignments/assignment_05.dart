@@ -1,33 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Assignment05 extends StatelessWidget {
-  const Assignment05({super.key});
-
-  static const Color royalGreen = Color.fromARGB(255, 2, 69, 52);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: false,
-        colorScheme: ColorScheme.fromSeed(seedColor: royalGreen),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: royalGreen,
-          foregroundColor: Colors.white,
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: royalGreen,
-          foregroundColor: Colors.white,
-        ),
-      ),
-      home: const HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class Assignment05Drawer extends StatelessWidget {
+  const Assignment05Drawer({super.key});
 
   static const Color royalGreen = Color.fromARGB(255, 2, 69, 52);
 
@@ -88,7 +62,7 @@ class HomePage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              "This is my Home screen.\nUse the drawer to navigate between pages.",
+              "This is my Home screen.\nUse the drawer to navigate between drawers and home screen.",
               textAlign: TextAlign.center,
             ),
           ],

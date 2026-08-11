@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:learning_flutter_app/lessons/class_01_hello_world/class_01.dart';
+import 'screens/home_screen.dart';
 
 void main() {
-  runApp(const Class01());
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter learning log',
+      home: const HomeScreen(),
+    );
+  }
 }
