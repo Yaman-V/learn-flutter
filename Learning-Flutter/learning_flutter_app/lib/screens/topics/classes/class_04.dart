@@ -46,75 +46,156 @@ class _Class04State extends State<Class04> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  final _formKey = GlobalKey<FormState>();
+  String userName = '';
+  String userEmail = '';
+  String userPassword = '';
+
+  Widget buildUserNameField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'User Name',
+      ),
+      maxLength: 30,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Enter user name';
+        }
+        if (value!.length <= 5) {
+          return 'User name so short (should be 4 char or more)';
+        }
+        return null;
+      },
+      onSaved: (newValue) => setState(() {
+        userName = newValue!;
+      }),
+    );
+  }
+
+  Widget buildUserEmailField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Email',
+      ),
+      validator: (value) {
+        final pattern = r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)';
+        final regExp = RegExp(pattern);
+        if (value!.isEmpty) {
+          return 'Enter an email';
+        } else if (!regExp.hasMatch(value)) {
+          return 'Enter a valid email';
+        } else {
+          return null;
+        }
+      },
+      onSaved: (newValue) => setState(() {
+        userEmail = newValue!;
+      }),
+    );
+  }
+
+  Widget buildUserPasswordField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Password',
+      ),
+      maxLength: 20,
+      obscureText: true,
+      validator: (value) {
+        if (value == null || value.isEmpty) return 'Enter a password';
+        // Minimum 8 chars, at least one uppercase, one lowercase, one number and one special char
+        final pattern =
+            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$';
+        final regExp = RegExp(pattern);
+        if (!regExp.hasMatch(value)) {
+          return 'Password must be 8+ chars, include upper, lower, number & special char';
+        }
+        return null;
+      },
+      onSaved: (newValue) => setState(() {
+        userPassword = newValue!;
+      }),
+    );
+  }
+
+  Widget buildSubmitButton() => SizedBox(
+    // Contain the btn with SizeBox becuase we want to change the width and it does not have it.
+    width: double.infinity,
+
+    child: ElevatedButton(
+      child: Text('Sign in'),
+      onPressed: () {
+        final isSignInValid = _formKey.currentState!.validate();
+        if (isSignInValid) {
+          _formKey.currentState!.save();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('All Doe'), duration: Duration(seconds: 20)),
+          );
+        }
+      },
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(title: const Text('Alass_04 : Animations')),
       body: Center(
-        child: SlideTransition(
-          position: animation,
-          child: Container(
-            width: 330,
-            // usually we dont define the hieght if the container cover all the page
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blueGrey.shade700,
-                  blurRadius: 20,
-                  offset: const Offset(2, 2),
-                ),
-              ],
-            ),
+        child: Form(
+          key: _formKey,
 
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // this is new
-                //spacing: 30,
-                children: [
-                  Icon(Icons.lock, size: 80, color: Colors.blue),
-                  SizedBox(height: 25),
-                  Text(
-                    'Login',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 25),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'User Name',
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-
-                  TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock_clock_outlined),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 35),
-
-                  SizedBox(
-                    // Contain the btn with SizeBox becuase we want to change the width and it does not have it.
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Login'),
-                    ),
+          child: SlideTransition(
+            position: animation,
+            child: Container(
+              width: 330,
+              // usually we dont define the hieght if the container cover all the page
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blueGrey.shade700,
+                    blurRadius: 20,
+                    offset: const Offset(2, 2),
                   ),
                 ],
+              ),
+
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // this is new
+                  //spacing: 30,
+                  children: [
+                    Icon(Icons.lock, size: 80, color: Colors.blue),
+                    SizedBox(height: 25),
+
+                    Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 25),
+
+                    buildUserNameField(),
+                    SizedBox(height: 15),
+
+                    buildUserEmailField(),
+                    SizedBox(height: 15),
+
+                    buildUserPasswordField(),
+                    SizedBox(height: 35),
+
+                    buildSubmitButton(),
+                  ],
+                ),
               ),
             ),
           ),
