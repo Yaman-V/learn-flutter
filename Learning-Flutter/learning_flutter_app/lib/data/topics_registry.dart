@@ -52,4 +52,10 @@ final List<Topic> topics = [
   ),
 
   // Mini Projects
+  Topic(
+    id: 'mini_project_1',
+    title: 'Rehab Tourism',
+    category: Category.miniProjects,
+    builder: (context) => TourismInRihab(),
+  ),
 ];
