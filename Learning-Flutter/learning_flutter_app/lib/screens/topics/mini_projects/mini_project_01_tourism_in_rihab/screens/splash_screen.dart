@@ -27,20 +27,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/images/logo.png', width: 250, height: 250),
-            Text(
-              'Tourism In Rehab',
-              style: TextStyle(color: Colors.white, fontSize: 24),
-            ),
-            Text(
-              'السياحة في رحاب',
-              style: TextStyle(color: Colors.white, fontSize: 24),
-            ),
+            Text('Tourism In Rehab', style: TextStyle(fontSize: 24)),
+            Text('السياحة في رحاب', style: TextStyle(fontSize: 24)),
             SizedBox(height: 30),
             CircularProgressIndicator(),
           ],
