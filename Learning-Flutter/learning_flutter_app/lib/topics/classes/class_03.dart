@@ -10,7 +10,7 @@ class Product {
 
 // This is stateful because we change the product list
 class Class03 extends StatefulWidget {
-  Class03({super.key});
+  const Class03({super.key});
 
   @override
   State<Class03> createState() => _Class03State();

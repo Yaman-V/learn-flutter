@@ -191,7 +191,7 @@ class _Assignment08State extends State<Assignment08> {
                   icon: Icons.account_balance,
                 ),
 
-                value: selectedAccountType,
+                initialValue: selectedAccountType,
 
                 items: ['Saving', 'Current', 'Salary']
                     .map(
