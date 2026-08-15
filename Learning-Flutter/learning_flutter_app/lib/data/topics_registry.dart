@@ -1,7 +1,7 @@
 import 'package:learning_flutter_app/models/topic.dart';
-import 'package:learning_flutter_app/screens/topics/classes/classes.dart';
-import 'package:learning_flutter_app/screens/topics/assignments/assignments.dart';
-import 'package:learning_flutter_app/screens/topics/mini_projects/mini_projects.dart';
+import 'package:learning_flutter_app/topics/classes/classes.dart';
+import 'package:learning_flutter_app/topics/assignments/assignments.dart';
+import 'package:learning_flutter_app/topics/mini_projects/mini_projects.dart';
 
 // This is the data list of I ever added
 final List<Topic> topics = [

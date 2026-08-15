@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:learning_flutter_app/screens/topics/mini_projects/mini_project_01_tourism_in_rihab/screens/main_screen.dart';
+import 'package:learning_flutter_app/topics/mini_projects/mini_project_01_tourism_in_rihab/screens/main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

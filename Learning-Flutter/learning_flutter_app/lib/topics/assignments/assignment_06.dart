@@ -1,4 +1,4 @@
-// screens/topics/assignments/assignment_06_profile.dart
+// topics/assignments/assignment_06_profile.dart
 import 'package:flutter/material.dart';
 
 class Assignment06Profile extends StatefulWidget {
