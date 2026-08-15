@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:learning_flutter_app/screens/topics/mini_projects/mini_project_01_tourism_in_rihab/providers/language_provider.dart';
-import 'package:learning_flutter_app/screens/topics/mini_projects/mini_project_01_tourism_in_rihab/providers/theme_provider.dart';
+import 'package:learning_flutter_app/providers/language_provider.dart';
+import 'package:learning_flutter_app/providers/theme_provider.dart';
 
 import 'package:provider/provider.dart';
 
