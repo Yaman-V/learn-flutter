@@ -24,7 +24,12 @@ final List<Topic> topics = [
     category: Category.assignments,
     builder: (context) => const Assignment07ListView(),
   ),
-
+  Topic(
+    id: 'assignment_08',
+    title: 'Forms: User Inputs',
+    category: Category.assignments,
+    builder: (context) => const Assignment08(),
+  ),
   // Classes
   Topic(
     id: 'class_01',
