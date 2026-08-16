@@ -55,7 +55,12 @@ final List<Topic> topics = [
     category: Category.classes,
     builder: (context) => Class04(),
   ),
-
+  Topic(
+    id: 'class_05',
+    title: 'Data from API',
+    category: Category.classes,
+    builder: (context) => Class05(),
+  ),
   // Mini Projects
   Topic(
     id: 'mini_project_1',
