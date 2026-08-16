@@ -80,11 +80,12 @@ Future<void> case4TryCatchError() async {
   print('Before async work: ${stopwatch.elapsedMilliseconds} ms');
 
   try {
+    // ignore: unused_local_variable
     final result = await Future.delayed(const Duration(seconds: 1), () {
       throw Exception('Failed to load data');
     });
 
-    print('Result: $result'); // This line will not run.
+    // print('Result: $result'); // This line will not run.
   } catch (e) {
     print('Caught error: $e');
     print('Error happened after ${stopwatch.elapsedMilliseconds} ms');

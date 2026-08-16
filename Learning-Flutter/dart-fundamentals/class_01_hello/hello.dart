@@ -31,10 +31,12 @@ void main() {
 
   print('\n*** Strings ***');
   print('multiple line string');
+  // ignore: unused_local_variable
   String multiLineString = '''
  To create a multi-line string in Dart, you can use triple quotes (\'\'\') (either single or double). This allows you to write strings that span multiple lines without needing to concatenate them. ''';
 
   print('\n*** Immutable Variables ***');
+  // ignore: unused_local_variable
   const String immutableString = 'This is an immutable string';
   print('to make an immutable variable, use the const keyword. ');
   // const vs final
@@ -141,8 +143,8 @@ void main() {
 
   print("\n*** Sets ***");
   // A set is an unordered collection of unique items. It is similar to a list, but it does not allow duplicate values. If you try to add a duplicate value to a set, it will be ignored.
-  Set<String> colors = {'Red', 'Green', 'Blue', 'Red'};
-  print(colors); // {Red, Green, Blue}
+  // Set<String> colors = {'Red', 'Green', 'Blue', 'Red'};
+  // print(colors); // {Red, Green, Blue}
 
   print("\n*** Maps ***");
   // A map is a collection of key-value pairs. Keys are unique, and each key maps to exactly one value. Values can be of any type, and can be duplicated.
