@@ -1,4 +1,5 @@
 import 'package:learning_flutter_app/models/topic.dart';
+
 import 'package:learning_flutter_app/topics/classes/classes.dart';
 import 'package:learning_flutter_app/topics/assignments/assignments.dart';
 import 'package:learning_flutter_app/topics/mini_projects/mini_projects.dart';
@@ -61,11 +62,23 @@ final List<Topic> topics = [
     category: Category.classes,
     builder: (context) => Class05(),
   ),
+  Topic(
+    id: 'class_06',
+    title: 'API: University App',
+    category: Category.classes,
+    builder: (context) => Class06(),
+  ),
   // Mini Projects
   Topic(
-    id: 'mini_project_1',
+    id: 'mini_project_01',
     title: 'Rehab Tourism',
     category: Category.miniProjects,
     builder: (context) => TourismInRihab(),
+  ),
+  Topic(
+    id: 'mini_project_02',
+    title: 'to-do app',
+    category: Category.miniProjects,
+    builder: (context) => TodoApp(),
   ),
 ];
