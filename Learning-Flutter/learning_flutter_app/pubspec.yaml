@@ -38,6 +38,7 @@ dependencies:
   provider: ^6.1.5+1
   easy_localization: ^3.0.8
   http: ^1.6.0
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

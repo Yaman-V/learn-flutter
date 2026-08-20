@@ -31,6 +31,7 @@ final List<Topic> topics = [
     category: Category.assignments,
     builder: (context) => const Assignment08(),
   ),
+
   // Classes
   Topic(
     id: 'class_01',
@@ -68,6 +69,7 @@ final List<Topic> topics = [
     category: Category.classes,
     builder: (context) => Class06(),
   ),
+
   // Mini Projects
   Topic(
     id: 'mini_project_01',
@@ -80,5 +82,11 @@ final List<Topic> topics = [
     title: 'to-do app',
     category: Category.miniProjects,
     builder: (context) => TodoApp(),
+  ),
+  Topic(
+    id: 'mini_project_03',
+    title: 'Book API Explorere',
+    category: Category.miniProjects,
+    builder: (context) => BookApiExplorer(),
   ),
 ];
