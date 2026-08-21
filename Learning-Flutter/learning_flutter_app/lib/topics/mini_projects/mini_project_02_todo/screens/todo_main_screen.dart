@@ -13,6 +13,10 @@ class _TodoMainScreenState extends State<TodoMainScreen> {
   List<Task> get activeTasks => tasks.where((t) => !t.isChecked).toList();
   List<Task> get doneTasks => tasks.where((t) => t.isChecked).toList();
 
+  void _toggleTask(Task task) {
+    setState(() => task.isChecked = !task.isChecked);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,25 +26,14 @@ class _TodoMainScreenState extends State<TodoMainScreen> {
           // Active List
           _ActiveTasksList(
             activeTasks: activeTasks,
-            onTaskChecked: (index) {
-              setState(() {
-                activeTasks[index].isChecked = !activeTasks[index].isChecked;
-              });
-            },
+            onTaskToggled: _toggleTask,
           ),
 
           // Divider
           _TasksDivider(doneTasksLength: doneTasks.length),
 
           // Done Tasks List
-          _DoneTasksList(
-            doneTasks: doneTasks,
-            onTaskChecked: (index) {
-              setState(() {
-                doneTasks[index].isChecked = !doneTasks[index].isChecked;
-              });
-            },
-          ),
+          _DoneTasksList(doneTasks: doneTasks, onTaskToggled: _toggleTask),
         ],
       ),
 
@@ -110,8 +103,9 @@ class _TodoMainScreenState extends State<TodoMainScreen> {
                               );
                             }).toList(),
                             onChanged: (newval) {
-                              if (newval != null)
+                              if (newval != null) {
                                 setModalState(() => priority = newval);
+                              }
                             },
                           ),
                         ),
@@ -201,23 +195,17 @@ class _TasksDivider extends StatelessWidget {
   }
 }
 
-class _ActiveTasksList extends StatefulWidget {
+class _ActiveTasksList extends StatelessWidget {
   final List<Task> activeTasks;
 
   //   callback function parameter so the parent handel the state managment?
-  final Function(int index) onTaskChecked;
-
+  final Function(Task task) onTaskToggled;
   const _ActiveTasksList({
     super.key,
     required this.activeTasks,
-    required this.onTaskChecked,
+    required this.onTaskToggled,
   });
 
-  @override
-  State<_ActiveTasksList> createState() => _ActiveTasksListState();
-}
-
-class _ActiveTasksListState extends State<_ActiveTasksList> {
   @override
   Widget build(BuildContext context) {
     return SliverList(
@@ -227,32 +215,26 @@ class _ActiveTasksListState extends State<_ActiveTasksList> {
             children: [
               // checkbox
               Checkbox(
-                value: widget.activeTasks[index].isChecked,
-                onChanged: (_) {
-                  widget.onTaskChecked(index);
-                },
+                value: activeTasks[index].isChecked,
+                onChanged: (_) => onTaskToggled(activeTasks[index]),
               ),
               // Tasks details
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.activeTasks[index].title),
+                  Text(activeTasks[index].title),
                   Row(
                     children: [
                       Container(
                         color: Colors.blue,
-                        child: Text(
-                          (widget.activeTasks[index].priority).toString(),
-                        ),
+                        child: Text((activeTasks[index].priority).name),
                       ),
-                      if (widget.activeTasks[index].label != null) ...[
+                      if (activeTasks[index].label != null) ...[
                         const SizedBox(width: 15),
                         Container(
                           color: Colors.red,
-                          child: Text(
-                            widget.activeTasks[index].label.toString(),
-                          ),
+                          child: Text(activeTasks[index].label!.name),
                         ),
                       ],
                     ],
@@ -262,27 +244,22 @@ class _ActiveTasksListState extends State<_ActiveTasksList> {
             ],
           ),
         ),
-        childCount: widget.activeTasks.length,
+        childCount: activeTasks.length,
       ),
     );
   }
 }
 
-class _DoneTasksList extends StatefulWidget {
+class _DoneTasksList extends StatelessWidget {
   final List<Task> doneTasks;
-  final Function(int index) onTaskChecked;
+  final Function(Task task) onTaskToggled;
 
   const _DoneTasksList({
     super.key,
     required this.doneTasks,
-    required this.onTaskChecked,
+    required this.onTaskToggled,
   });
 
-  @override
-  State<_DoneTasksList> createState() => _DoneTasksListState();
-}
-
-class _DoneTasksListState extends State<_DoneTasksList> {
   @override
   Widget build(BuildContext context) {
     return SliverList(
@@ -291,32 +268,28 @@ class _DoneTasksListState extends State<_DoneTasksList> {
           child: Row(
             children: [
               Checkbox(
-                value: widget.doneTasks[index].isChecked,
-                onChanged: (_) {
-                  widget.onTaskChecked(index);
-                },
+                value: doneTasks[index].isChecked,
+                onChanged: (_) => onTaskToggled(doneTasks[index]),
               ),
 
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.doneTasks[index].title),
+                  Text(doneTasks[index].title),
 
                   Row(
                     children: [
                       Container(
                         color: Colors.blue,
-                        child: Text(
-                          (widget.doneTasks[index].priority).toString(),
-                        ),
+                        child: Text((doneTasks[index].priority).name),
                       ),
 
-                      if (widget.doneTasks[index].label != null) ...[
+                      if (doneTasks[index].label != null) ...[
                         const SizedBox(width: 15),
                         Container(
                           color: Colors.red,
-                          child: Text(widget.doneTasks[index].label.toString()),
+                          child: Text(doneTasks[index].label!.name),
                         ),
                       ],
                     ],
@@ -327,7 +300,7 @@ class _DoneTasksListState extends State<_DoneTasksList> {
           ),
         ),
 
-        childCount: widget.doneTasks.length,
+        childCount: doneTasks.length,
       ),
     );
   }
