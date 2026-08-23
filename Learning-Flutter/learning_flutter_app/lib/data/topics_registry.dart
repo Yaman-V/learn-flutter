@@ -89,4 +89,10 @@ final List<Topic> topics = [
     category: Category.miniProjects,
     builder: (context) => BookApiExplorer(),
   ),
+  Topic(
+    id: 'mini_project_04',
+    title: 'weather app',
+    category: Category.miniProjects,
+    builder: (context) => WeatherApp(),
+  ),
 ];
