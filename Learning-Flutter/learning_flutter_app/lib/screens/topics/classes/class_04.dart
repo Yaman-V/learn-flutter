@@ -183,9 +183,11 @@ class _Class04State extends State<Class04> with SingleTickerProviderStateMixin {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: (themeProvider.isDarkMode
-                          ? Colors.black
-                          : Colors.grey),
+                      color:
+                          (themeProvider.isDarkMode
+                                  ? Colors.black
+                                  : Colors.grey)
+                              .withValues(alpha: 0.2),
                       blurRadius: 18,
                       offset: const Offset(0, 8),
                     ),
