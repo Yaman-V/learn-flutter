@@ -95,4 +95,10 @@ final List<Topic> topics = [
     category: Category.miniProjects,
     builder: (context) => WeatherApp(),
   ),
+  Topic(
+    id: 'mini_project_05',
+    title: 'AI chatBot',
+    category: Category.miniProjects,
+    builder: (context) => Chatbot(),
+  ),
 ];
