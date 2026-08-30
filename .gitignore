@@ -1,1 +1,8 @@
 .vscode/settings.json
+
+# Environment variables (Crucial for security - never commit secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

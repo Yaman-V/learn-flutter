@@ -13,8 +13,8 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController controller = TextEditingController();
   final List<ChatMessage> messages = [];
   bool isLoading = false;
-  final String apiKey =
-      "sk-or-v1- 2c6a2d9f319b754ee406272bbdfd9000117ce7ed5419068f334807f24d9a2fe3";
+  final String apiKey = const String.fromEnvironment('OPENROUTER_API_KEY');
+
   Future<void> sendMessage(String text) async {
     setState(() {
       messages.add(ChatMessage(role: "user", text: text));
