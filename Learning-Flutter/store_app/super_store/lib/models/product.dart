@@ -9,7 +9,7 @@ class Product {
   double price;
   double rating;
   final List<String> tags;
-  final String brand;
+  final String? brand;
   final String availabilityStatus;
   final String returnPolicy;
   final List<String> images;
@@ -49,19 +49,19 @@ class Product {
 
   @override
   String toString() {
-    return 'Product('
-        'id: $id, '
-        'title: $title, '
-        'description: $description, '
-        'category: $category, '
-        'price: $price, '
-        'rating: $rating, '
-        'tags: $tags, '
-        'brand: $brand, '
-        'availabilityStatus: $availabilityStatus, '
-        'returnPolicy: $returnPolicy, '
-        'images: $images, '
+    return 'Product(\n'
+        'id: $id,\n'
+        'title: $title,\n'
+        'description: $description,\n'
+        'category: $category,\n'
+        'price: $price,\n'
+        'rating: $rating,\n'
+        'tags: $tags,\n'
+        'brand: $brand,\n'
+        'availabilityStatus: $availabilityStatus,\n'
+        'returnPolicy: $returnPolicy,\n'
+        'images: $images,\n'
         'thumbnail: $thumbnail'
-        ')';
+        '\n)\n\n';
   }
 }
