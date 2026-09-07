@@ -38,11 +38,11 @@ class Product {
       category: json['category'],
       price: json['price'].toDouble(),
       rating: json['rating'].toDouble(),
-      tags: json['tags'],
+      tags: json['tags'].cast<String>(),
       brand: json['brand'],
       availabilityStatus: json['availabilityStatus'],
       returnPolicy: json['returnPolicy'],
-      images: json['images'],
+      images: json['images'].cast<String>(),
       thumbnail: json['thumbnail'],
     );
   }
