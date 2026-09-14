@@ -5,7 +5,10 @@ import '../state/budget_state.dart';
 import '../models/transaction.dart';
 
 class AddTransactionScreen extends StatefulWidget {
-  const AddTransactionScreen({super.key});
+  final Transaction?
+  existingTransaction; // If null, we add. If not null, we edit.
+
+  const AddTransactionScreen({super.key, this.existingTransaction});
 
   @override
   State<AddTransactionScreen> createState() => _AddTransactionScreenState();
@@ -18,6 +21,25 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   String? _selectedCategoryId;
   DateTime _selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    // If editing, pre-fill the form with existing data
+    if (widget.existingTransaction != null) {
+      _amountController.text = widget.existingTransaction!.amount.toString();
+      _noteController.text = widget.existingTransaction!.note;
+      _selectedDate = widget.existingTransaction!.date;
+
+      // Ensure the category still exists in the state before selecting it
+      final categories = context.read<BudgetState>().categories;
+      if (categories.any(
+        (c) => c.id == widget.existingTransaction!.categoryId,
+      )) {
+        _selectedCategoryId = widget.existingTransaction!.categoryId;
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -44,17 +66,27 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     if (_formKey.currentState!.validate()) {
       final amount = double.parse(_amountController.text);
 
-      final newTransaction = Transaction(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+      final state = context.read<BudgetState>();
+      final isEditing = widget.existingTransaction != null;
+
+      final transaction = Transaction(
+        id: isEditing
+            ? widget.existingTransaction!.id
+            : DateTime.now().millisecondsSinceEpoch.toString(),
         amount: amount,
         categoryId: _selectedCategoryId!,
         note: _noteController.text.trim(),
         date: _selectedDate,
       );
 
-      final state = context.read<BudgetState>();
-      state.addTransaction(newTransaction);
+      // Route to correct state method
+      if (isEditing) {
+        state.editTransaction(transaction.id, transaction);
+      } else {
+        state.addTransaction(transaction);
+      }
 
+      // Alert logic for negative balance
       if (state.accountBalance < 0) {
         showDialog(
           context: context,
@@ -68,13 +100,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               ],
             ),
             content: const Text(
-              'This transaction put your account balance below zero. Please review your budget.',
+              'This transaction puts your account balance below zero. Please review your budget.',
             ),
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(ctx); // Close dialog
-                  Navigator.pop(context); // Close add screen
+                  Navigator.pop(ctx);
+                  Navigator.pop(context);
                 },
                 child: const Text('Understood'),
               ),
@@ -91,9 +123,25 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget build(BuildContext context) {
     final categories = context.read<BudgetState>().categories;
     final dateFormatter = DateFormat('MMM dd, yyyy');
+    final isEditing = widget.existingTransaction != null;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Transaction')),
+      appBar: AppBar(
+        title: Text(isEditing ? 'Edit Transaction' : 'Add Transaction'),
+        actions: [
+          // Show delete button only if we are editing an existing transaction
+          if (isEditing)
+            IconButton(
+              icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              onPressed: () {
+                context.read<BudgetState>().deleteTransaction(
+                  widget.existingTransaction!.id,
+                );
+                Navigator.pop(context);
+              },
+            ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -111,13 +159,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.isEmpty)
                     return 'Please enter an amount';
-                  }
                   final parsed = double.tryParse(value);
-                  if (parsed == null || parsed <= 0) {
+                  if (parsed == null || parsed <= 0)
                     return 'Amount must be greater than 0';
-                  }
                   return null;
                 },
               ),
@@ -166,9 +212,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: _submitTransaction,
-                child: const Text(
-                  'Save Transaction',
-                  style: TextStyle(fontSize: 16),
+                child: Text(
+                  isEditing ? 'Update Transaction' : 'Save Transaction',
+                  style: const TextStyle(fontSize: 16),
                 ),
               ),
             ],

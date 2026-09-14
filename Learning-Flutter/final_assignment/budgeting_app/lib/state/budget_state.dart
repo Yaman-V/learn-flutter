@@ -11,6 +11,53 @@ class BudgetState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteTransaction(String id) {
+    final txIndex = transactions.indexWhere((t) => t.id == id);
+    if (txIndex != -1) {
+      final tx = transactions[txIndex];
+
+      // Revert account balance
+      accountBalance += tx.amount;
+
+      // Revert category spent amount
+      final catIndex = categories.indexWhere((c) => c.id == tx.categoryId);
+      if (catIndex != -1) {
+        categories[catIndex].spentAmount -= tx.amount;
+      }
+
+      transactions.removeAt(txIndex);
+      notifyListeners();
+    }
+  }
+
+  void editTransaction(String id, Transaction newTx) {
+    final txIndex = transactions.indexWhere((t) => t.id == id);
+    if (txIndex != -1) {
+      final oldTx = transactions[txIndex];
+
+      accountBalance += oldTx.amount;
+      final oldCatIndex = categories.indexWhere(
+        (c) => c.id == oldTx.categoryId,
+      );
+      if (oldCatIndex != -1) {
+        categories[oldCatIndex].spentAmount -= oldTx.amount;
+      }
+
+      accountBalance -= newTx.amount;
+      final newCatIndex = categories.indexWhere(
+        (c) => c.id == newTx.categoryId,
+      );
+      if (newCatIndex != -1) {
+        categories[newCatIndex].spentAmount += newTx.amount;
+      }
+
+      transactions[txIndex] = newTx;
+      transactions.sort((a, b) => b.date.compareTo(a.date));
+
+      notifyListeners();
+    }
+  }
+
   void addCategory(String name, double budget) {
     categories.add(
       BudgetCategory(
