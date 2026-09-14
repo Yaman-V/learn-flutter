@@ -293,7 +293,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           _buildStepHeader(
             theme,
             icon: Icons.account_balance_wallet_outlined,
-            title: 'Welcome to Budget Prototype',
+            title: 'Welcome to your Budget app',
             message: 'First, tell us how much you have available to manage.',
           ),
           const SizedBox(height: 44),

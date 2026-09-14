@@ -24,7 +24,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Budget Prototype'),
+        title: const Text('My Budget'),
         actions: [
           IconButton(
             icon: Icon(

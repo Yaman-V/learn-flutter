@@ -20,6 +20,7 @@ class BudgetPrototypeApp extends StatelessWidget {
     final state = context.watch<BudgetState>();
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Budget Prototype',
       themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
