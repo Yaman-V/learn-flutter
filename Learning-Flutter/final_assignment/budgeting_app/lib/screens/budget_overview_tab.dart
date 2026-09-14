@@ -18,17 +18,25 @@ class BudgetOverviewTab extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const Text('Available Balance', style: TextStyle(fontSize: 16, color: Colors.grey)),
+              const Text(
+                'Available Balance',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
               Text(
                 currencyFormatter.format(state.accountBalance),
-                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  // Add this color condition
+                  color: state.accountBalance < 0 ? Colors.redAccent : null,
+                ),
               ),
             ],
           ),
         ),
         SizedBox(
           height: 200,
-          child: state.totalSpent == 0 
+          child: state.totalSpent == 0
               ? const Center(child: Text('No spending yet. Add a transaction!'))
               : PieChart(
                   PieChartData(
@@ -37,19 +45,21 @@ class BudgetOverviewTab extends StatelessWidget {
                     sections: state.categories
                         .where((c) => c.spentAmount > 0)
                         .map((cat) {
-                      final percentage = (cat.spentAmount / state.totalSpent) * 100;
-                      return PieChartSectionData(
-                        color: cat.color,
-                        value: cat.spentAmount,
-                        title: '${percentage.toStringAsFixed(0)}%',
-                        radius: 40,
-                        titleStyle: const TextStyle(
-                          fontSize: 12, 
-                          fontWeight: FontWeight.bold, 
-                          color: Colors.white
-                        ),
-                      );
-                    }).toList(),
+                          final percentage =
+                              (cat.spentAmount / state.totalSpent) * 100;
+                          return PieChartSectionData(
+                            color: cat.color,
+                            value: cat.spentAmount,
+                            title: '${percentage.toStringAsFixed(0)}%',
+                            radius: 40,
+                            titleStyle: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          );
+                        })
+                        .toList(),
                   ),
                 ),
         ),
@@ -60,7 +70,7 @@ class BudgetOverviewTab extends StatelessWidget {
             itemBuilder: (context, index) {
               final cat = state.categories[index];
               final percentSpent = (cat.spentAmount / cat.budgetedAmount);
-              
+
               Color progressColor = Colors.green;
               if (percentSpent >= 1.0) {
                 progressColor = Colors.red;
@@ -69,17 +79,26 @@ class BudgetOverviewTab extends StatelessWidget {
               }
 
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(cat.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                        Text(
+                          cat.name,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
                         Text(
                           '${currencyFormatter.format(cat.spentAmount)} / ${currencyFormatter.format(cat.budgetedAmount)}',
-                          style: const TextStyle(color: Colors.grey, fontSize: 12),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),

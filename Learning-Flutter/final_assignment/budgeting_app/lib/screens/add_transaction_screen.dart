@@ -15,7 +15,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _noteController = TextEditingController();
-  
+
   String? _selectedCategoryId;
   DateTime _selectedDate = DateTime.now();
 
@@ -43,7 +43,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   void _submitTransaction() {
     if (_formKey.currentState!.validate()) {
       final amount = double.parse(_amountController.text);
-      
+
       final newTransaction = Transaction(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         amount: amount,
@@ -52,8 +52,38 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         date: _selectedDate,
       );
 
-      context.read<BudgetState>().addTransaction(newTransaction);
-      Navigator.pop(context);
+      final state = context.read<BudgetState>();
+      state.addTransaction(newTransaction);
+
+      if (state.accountBalance < 0) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) => AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.warning_amber_rounded, color: Colors.red),
+                SizedBox(width: 8),
+                Text('Negative Balance'),
+              ],
+            ),
+            content: const Text(
+              'This transaction put your account balance below zero. Please review your budget.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(ctx); // Close dialog
+                  Navigator.pop(context); // Close add screen
+                },
+                child: const Text('Understood'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -63,9 +93,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     final dateFormatter = DateFormat('MMM dd, yyyy');
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Transaction'),
-      ),
+      appBar: AppBar(title: const Text('Add Transaction')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -74,7 +102,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             children: [
               TextFormField(
                 controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: const InputDecoration(
                   labelText: 'Amount',
                   prefixText: '\$ ',
@@ -99,13 +129,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   border: OutlineInputBorder(),
                 ),
                 items: categories.map((cat) {
-                  return DropdownMenuItem(
-                    value: cat.id,
-                    child: Text(cat.name),
-                  );
+                  return DropdownMenuItem(value: cat.id, child: Text(cat.name));
                 }).toList(),
                 onChanged: (val) => setState(() => _selectedCategoryId = val),
-                validator: (value) => value == null ? 'Please select a category' : null,
+                validator: (value) =>
+                    value == null ? 'Please select a category' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -138,7 +166,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: _submitTransaction,
-                child: const Text('Save Transaction', style: TextStyle(fontSize: 16)),
+                child: const Text(
+                  'Save Transaction',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             ],
           ),
