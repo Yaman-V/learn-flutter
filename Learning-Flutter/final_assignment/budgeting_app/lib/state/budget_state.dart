@@ -3,8 +3,21 @@ import '../models/budget_category.dart';
 import '../models/transaction.dart';
 
 class BudgetState extends ChangeNotifier {
-  double accountBalance = 3500.00;
+  double accountBalance = 0.0;
   bool isDarkMode = false;
+
+  void initializeBudget(
+    double initialBalance,
+    List<BudgetCategory> initialCategories,
+  ) {
+    accountBalance = initialBalance;
+    categories = List<BudgetCategory>.from(initialCategories);
+
+    // Start with no transactions for a new budget.
+    transactions = [];
+
+    notifyListeners();
+  }
 
   void toggleTheme() {
     isDarkMode = !isDarkMode;

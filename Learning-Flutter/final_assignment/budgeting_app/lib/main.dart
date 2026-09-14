@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'state/budget_state.dart';
-import 'screens/main_screen.dart';
+import 'screens/onboarding_screen.dart';
 
 void main() {
   runApp(
@@ -17,7 +17,8 @@ class BudgetPrototypeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<BudgetState>(); // Watch the state here
+    final state = context.watch<BudgetState>();
+
     return MaterialApp(
       title: 'Budget Prototype',
       themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
@@ -35,7 +36,7 @@ class BudgetPrototypeApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MainScreen(),
+      home: const OnboardingScreen(),
     );
   }
 }
