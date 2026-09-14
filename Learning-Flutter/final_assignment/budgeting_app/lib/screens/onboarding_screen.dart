@@ -15,6 +15,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _formKey = GlobalKey<FormState>();
   final _balanceController = TextEditingController();
+  int _currentStep = 0;
 
   late List<_CategoryOption> _categories;
 
@@ -183,11 +184,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  void _getStarted() {
+  void _continueToCategories() {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
+    setState(() {
+      _currentStep = 1;
+    });
+  }
+
+  void _createBudget() {
     final balance = _parseAmount(_balanceController.text)!;
 
     final selectedCategories = _categories
@@ -197,6 +204,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     context.read<BudgetState>().initializeBudget(balance, selectedCategories);
 
+    setState(() {
+      _currentStep = 2;
+    });
+  }
+
+  void _openApp() {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const MainScreen()),
@@ -209,197 +222,220 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 20,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 40,
                 ),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight - 40,
-                  ),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const SizedBox(height: 12),
+                child: _currentStep == 0
+                    ? _buildBalanceStep(theme)
+                    : _currentStep == 1
+                    ? _buildCategoriesStep(theme)
+                    : _buildWelcomeStep(theme),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 
-                        // Welcome section
-                        Center(
-                          child: Container(
-                            width: 72,
-                            height: 72,
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primaryContainer,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.account_balance_wallet_outlined,
-                              size: 38,
-                              color: theme.colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        Text(
-                          'Welcome to Budget Prototype',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        Text(
-                          'Let\'s set up your starting balance and budget categories.',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-
-                        const SizedBox(height: 32),
-
-                        // Starting balance
-                        Text(
-                          'Starting Account Balance',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        TextFormField(
-                          controller: _balanceController,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          decoration: const InputDecoration(
-                            prefixText: '\$ ',
-                            hintText: 'e.g. 3500',
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(18),
-                              ),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Enter your starting balance';
-                            }
-
-                            final amount = _parseAmount(value);
-
-                            if (amount == null) {
-                              return 'Enter a valid number';
-                            }
-
-                            if (amount <= 0) {
-                              return 'Balance must be greater than 0';
-                            }
-
-                            return null;
-                          },
-                        ),
-
-                        const SizedBox(height: 28),
-
-                        // Categories header
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Budget Categories',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            OutlinedButton.icon(
-                              onPressed: _showAddCustomCategoryDialog,
-                              icon: const Icon(Icons.add),
-                              label: const Text('Add Custom'),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Checklist
-                        Card(
-                          elevation: 0,
-                          color: theme.colorScheme.surface,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Column(
-                              children: [
-                                for (
-                                  int index = 0;
-                                  index < _categories.length;
-                                  index++
-                                )
-                                  CheckboxListTile(
-                                    value: _categories[index].isSelected,
-                                    onChanged: (selected) {
-                                      setState(() {
-                                        _categories[index].isSelected =
-                                            selected ?? false;
-                                      });
-                                    },
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    title: Text(
-                                      _categories[index].category.name,
-                                    ),
-                                    subtitle: Text(
-                                      'Budget limit: \$${_categories[index].category.budgetedAmount.toStringAsFixed(2)}',
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        const Spacer(),
-
-                        const SizedBox(height: 32),
-
-                        // Get Started
-                        SizedBox(
-                          height: 52,
-                          child: FilledButton(
-                            onPressed: _getStarted,
-                            child: const Text(
-                              'Get Started',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+  Widget _buildStepHeader(
+    ThemeData theme, {
+    required IconData icon,
+    required String title,
+    required String message,
+  }) {
+    return Column(
+      children: [
+        Container(
+          width: 72,
+          height: 72,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            icon,
+            size: 38,
+            color: theme.colorScheme.onPrimaryContainer,
           ),
         ),
+        const SizedBox(height: 20),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          message,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBalanceStep(ThemeData theme) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildStepHeader(
+            theme,
+            icon: Icons.account_balance_wallet_outlined,
+            title: 'Welcome to Budget Prototype',
+            message: 'First, tell us how much you have available to manage.',
+          ),
+          const SizedBox(height: 44),
+          Text(
+            'Starting account balance',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextFormField(
+            controller: _balanceController,
+            autofocus: true,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: const InputDecoration(
+              prefixText: '\$ ',
+              hintText: 'e.g. 3500',
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(18)),
+                borderSide: BorderSide.none,
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Enter your starting balance';
+              }
+              final amount = _parseAmount(value);
+              if (amount == null) return 'Enter a valid number';
+              if (amount <= 0) return 'Balance must be greater than 0';
+              return null;
+            },
+          ),
+          const SizedBox(height: 32),
+          SizedBox(
+            height: 52,
+            child: FilledButton.icon(
+              onPressed: _continueToCategories,
+              icon: const Icon(Icons.arrow_forward_rounded),
+              label: const Text('Continue to categories'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoriesStep(ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildStepHeader(
+          theme,
+          icon: Icons.tune_rounded,
+          title: 'Build your budget',
+          message: 'Choose the categories you want to track, or add your own.',
+        ),
+        const SizedBox(height: 32),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Your categories',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            OutlinedButton.icon(
+              onPressed: _showAddCustomCategoryDialog,
+              icon: const Icon(Icons.add),
+              label: const Text('Add custom'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Card(
+          elevation: 0,
+          color: theme.colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Column(
+              children: [
+                for (int index = 0; index < _categories.length; index++)
+                  CheckboxListTile(
+                    value: _categories[index].isSelected,
+                    onChanged: (selected) {
+                      setState(() {
+                        _categories[index].isSelected = selected ?? false;
+                      });
+                    },
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(
+                      _categories[index].category.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      'Budget limit: \$${_categories[index].category.budgetedAmount.toStringAsFixed(2)}',
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 32),
+        SizedBox(
+          height: 52,
+          child: FilledButton.icon(
+            onPressed: _createBudget,
+            icon: const Icon(Icons.check_rounded),
+            label: const Text('Create my budget'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWelcomeStep(ThemeData theme) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 560),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildStepHeader(
+            theme,
+            icon: Icons.celebration_outlined,
+            title: 'You\'re all set',
+            message: 'Your budget is ready. Let\'s make every dollar count.',
+          ),
+          const SizedBox(height: 44),
+          SizedBox(
+            height: 52,
+            child: FilledButton.icon(
+              onPressed: _openApp,
+              icon: const Icon(Icons.arrow_forward_rounded),
+              label: const Text('Enter my budget'),
+            ),
+          ),
+        ],
       ),
     );
   }
