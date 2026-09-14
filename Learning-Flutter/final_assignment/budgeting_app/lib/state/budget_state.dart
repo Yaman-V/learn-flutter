@@ -11,6 +11,32 @@ class BudgetState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addCategory(String name, double budget) {
+    categories.add(
+      BudgetCategory(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        name: name,
+        budgetedAmount: budget,
+        color: Colors.primaries[categories.length % Colors.primaries.length],
+      ),
+    );
+    notifyListeners();
+  }
+
+  void editCategory(String id, String newName, double newBudget) {
+    final index = categories.indexWhere((c) => c.id == id);
+    if (index != -1) {
+      categories[index] = BudgetCategory(
+        id: id,
+        name: newName,
+        budgetedAmount: newBudget,
+        spentAmount: categories[index].spentAmount,
+        color: categories[index].color,
+      );
+      notifyListeners();
+    }
+  }
+
   List<BudgetCategory> categories = [
     BudgetCategory(
       id: '1',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:wallet_app/models/budget_category.dart';
 import '../state/budget_state.dart';
 
 class BudgetOverviewTab extends StatelessWidget {
@@ -64,12 +65,34 @@ class BudgetOverviewTab extends StatelessWidget {
                 ),
         ),
         const SizedBox(height: 16),
+
+        // Category Header with Add Button
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Categories',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add_circle_outline),
+                onPressed: () => _showCategoryDialog(context),
+              ),
+            ],
+          ),
+        ),
+
+        // Category List with Progress Bars
         Expanded(
           child: ListView.builder(
             itemCount: state.categories.length,
             itemBuilder: (context, index) {
               final cat = state.categories[index];
-              final percentSpent = (cat.spentAmount / cat.budgetedAmount);
+              final percentSpent = (cat.budgetedAmount > 0)
+                  ? (cat.spentAmount / cat.budgetedAmount)
+                  : 1.0;
 
               Color progressColor = Colors.green;
               if (percentSpent >= 1.0) {
@@ -78,39 +101,44 @@ class BudgetOverviewTab extends StatelessWidget {
                 progressColor = Colors.amber;
               }
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          cat.name,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        Text(
-                          '${currencyFormatter.format(cat.spentAmount)} / ${currencyFormatter.format(cat.budgetedAmount)}',
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
+              // Wrap in InkWell to trigger Edit
+              return InkWell(
+                onTap: () =>
+                    _showCategoryDialog(context, existingCategory: cat),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            cat.name,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    LinearProgressIndicator(
-                      value: percentSpent.clamp(0.0, 1.0),
-                      backgroundColor: Colors.grey.shade200,
-                      color: progressColor,
-                      minHeight: 8,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ],
+                          Text(
+                            '${currencyFormatter.format(cat.spentAmount)} / ${currencyFormatter.format(cat.budgetedAmount)}',
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      LinearProgressIndicator(
+                        value: percentSpent.clamp(0.0, 1.0),
+                        backgroundColor: Colors.grey.withOpacity(0.2),
+                        color: progressColor,
+                        minHeight: 8,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -119,4 +147,65 @@ class BudgetOverviewTab extends StatelessWidget {
       ],
     );
   }
+}
+
+void _showCategoryDialog(
+  BuildContext context, {
+  BudgetCategory? existingCategory,
+}) {
+  final nameController = TextEditingController(
+    text: existingCategory?.name ?? '',
+  );
+  final budgetController = TextEditingController(
+    text: existingCategory != null
+        ? existingCategory.budgetedAmount.toString()
+        : '',
+  );
+
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(existingCategory == null ? 'Add Category' : 'Edit Category'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: nameController,
+            decoration: const InputDecoration(labelText: 'Category Name'),
+          ),
+          TextField(
+            controller: budgetController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: const InputDecoration(labelText: 'Budget Limit'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final name = nameController.text.trim();
+            final budget = double.tryParse(budgetController.text) ?? 0.0;
+
+            if (name.isNotEmpty && budget > 0) {
+              if (existingCategory == null) {
+                context.read<BudgetState>().addCategory(name, budget);
+              } else {
+                context.read<BudgetState>().editCategory(
+                  existingCategory.id,
+                  name,
+                  budget,
+                );
+              }
+              Navigator.pop(ctx);
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    ),
+  );
 }
