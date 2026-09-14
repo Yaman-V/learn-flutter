@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-import 'package:wallet_app/models/budget_category.dart';
 import '../state/budget_state.dart';
+import '../models/budget_category.dart';
 
 class BudgetOverviewTab extends StatelessWidget {
   const BudgetOverviewTab({super.key});
@@ -15,6 +15,7 @@ class BudgetOverviewTab extends StatelessWidget {
 
     return Column(
       children: [
+        // Account Balance Header
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -28,13 +29,14 @@ class BudgetOverviewTab extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  // Add this color condition
                   color: state.accountBalance < 0 ? Colors.redAccent : null,
                 ),
               ),
             ],
           ),
         ),
+
+        // Donut Chart
         SizedBox(
           height: 200,
           child: state.totalSpent == 0
@@ -101,44 +103,54 @@ class BudgetOverviewTab extends StatelessWidget {
                 progressColor = Colors.amber;
               }
 
-              // Wrap in InkWell to trigger Edit
-              return InkWell(
-                onTap: () =>
-                    _showCategoryDialog(context, existingCategory: cat),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 12.0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
                             cat.name,
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
-                          Text(
-                            '${currencyFormatter.format(cat.spentAmount)} / ${currencyFormatter.format(cat.budgetedAmount)}',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                            ),
+                        ),
+                        Text(
+                          '${currencyFormatter.format(cat.spentAmount)} / ${currencyFormatter.format(cat.budgetedAmount)}',
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      LinearProgressIndicator(
-                        value: percentSpent.clamp(0.0, 1.0),
-                        backgroundColor: Colors.grey.withOpacity(0.2),
-                        color: progressColor,
-                        minHeight: 8,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ],
-                  ),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.edit,
+                            size: 18,
+                            color: Colors.blueGrey,
+                          ),
+                          constraints:
+                              const BoxConstraints(), // Keeps the icon tight to the text
+                          padding: const EdgeInsets.only(left: 8.0),
+                          onPressed: () => _showCategoryDialog(
+                            context,
+                            existingCategory: cat,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    LinearProgressIndicator(
+                      value: percentSpent.clamp(0.0, 1.0),
+                      backgroundColor: Colors.grey.withOpacity(0.2),
+                      color: progressColor,
+                      minHeight: 8,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ],
                 ),
               );
             },
@@ -149,6 +161,7 @@ class BudgetOverviewTab extends StatelessWidget {
   }
 }
 
+// Dialog Helper Function (Placed outside the class so it can be called easily)
 void _showCategoryDialog(
   BuildContext context, {
   BudgetCategory? existingCategory,
@@ -181,6 +194,15 @@ void _showCategoryDialog(
         ],
       ),
       actions: [
+        if (existingCategory != null)
+          TextButton(
+            onPressed: () {
+              context.read<BudgetState>().deleteCategory(existingCategory.id);
+              Navigator.pop(ctx);
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
         TextButton(
           onPressed: () => Navigator.pop(ctx),
           child: const Text('Cancel'),

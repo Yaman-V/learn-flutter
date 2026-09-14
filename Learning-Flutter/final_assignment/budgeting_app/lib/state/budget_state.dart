@@ -37,6 +37,12 @@ class BudgetState extends ChangeNotifier {
     }
   }
 
+  void deleteCategory(String id) {
+    categories.removeWhere((c) => c.id == id);
+    transactions.removeWhere((tx) => tx.categoryId == id);
+    notifyListeners();
+  }
+
   List<BudgetCategory> categories = [
     BudgetCategory(
       id: '1',
