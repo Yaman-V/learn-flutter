@@ -143,7 +143,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
         child: Form(
           key: _formKey,
           child: ListView(
@@ -153,10 +153,15 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Amount',
                   prefixText: '\$ ',
-                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty)
@@ -170,9 +175,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 value: _selectedCategoryId,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Category',
-                  border: OutlineInputBorder(),
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(18)),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
                 items: categories.map((cat) {
                   return DropdownMenuItem(value: cat.id, child: Text(cat.name));
@@ -184,18 +193,28 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _noteController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Note / Payee',
-                  border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
               InkWell(
                 onTap: _pickDate,
                 child: InputDecorator(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Date',
-                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,9 +226,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              ElevatedButton(
+              FilledButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
                 onPressed: _submitTransaction,
                 child: Text(

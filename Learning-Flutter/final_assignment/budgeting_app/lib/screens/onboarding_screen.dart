@@ -97,7 +97,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   decoration: const InputDecoration(
                     labelText: 'Category Name',
                     hintText: 'e.g. Entertainment',
-                    border: OutlineInputBorder(),
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -116,7 +120,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     labelText: 'Budget Limit',
                     hintText: 'e.g. 250',
                     prefixText: '\$ ',
-                    border: OutlineInputBorder(),
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -277,7 +285,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           decoration: const InputDecoration(
                             prefixText: '\$ ',
                             hintText: 'e.g. 3500',
-                            border: OutlineInputBorder(),
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(18),
+                              ),
+                              borderSide: BorderSide.none,
+                            ),
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
@@ -323,7 +337,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         // Checklist
                         Card(
                           elevation: 0,
-                          color: theme.colorScheme.surfaceContainerHighest,
+                          color: theme.colorScheme.surface,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(22),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             child: Column(

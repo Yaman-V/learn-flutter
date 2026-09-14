@@ -12,33 +12,74 @@ class BudgetOverviewTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<BudgetState>();
     final currencyFormatter = NumberFormat.currency(symbol: '\$');
+    final theme = Theme.of(context);
 
     return Column(
       children: [
         // Account Balance Header
         Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const Text(
-                'Available Balance',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: state.accountBalance < 0
+                    ? [const Color(0xFFB8324B), const Color(0xFF7A243E)]
+                    : [const Color(0xFF087E8B), const Color(0xFF123C69)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              Text(
-                currencyFormatter.format(state.accountBalance),
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: state.accountBalance < 0 ? Colors.redAccent : null,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.22),
+                  blurRadius: 24,
+                  offset: const Offset(0, 12),
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Available Balance',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  currencyFormatter.format(state.accountBalance),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
 
         // Donut Chart
-        SizedBox(
-          height: 200,
+        Container(
+          height: 220,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
           child: state.totalSpent == 0
               ? const Center(child: Text('No spending yet. Add a transaction!'))
               : PieChart(
@@ -66,11 +107,11 @@ class BudgetOverviewTab extends StatelessWidget {
                   ),
                 ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
 
         // Category Header with Add Button
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -104,53 +145,70 @@ class BudgetOverviewTab extends StatelessWidget {
               }
 
               return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 12.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            cat.name,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                padding: const EdgeInsets.fromLTRB(20, 6, 20, 10),
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 12, 16),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.035),
+                        blurRadius: 14,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              cat.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15,
+                              ),
+                            ),
                           ),
+                          Text(
+                            '${currencyFormatter.format(cat.spentAmount)} / ${currencyFormatter.format(cat.budgetedAmount)}',
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.edit,
+                              size: 18,
+                              color: Colors.blueGrey,
+                            ),
+                            constraints:
+                                const BoxConstraints(), // Keeps the icon tight to the text
+                            padding: const EdgeInsets.only(left: 8.0),
+                            onPressed: () => _showCategoryDialog(
+                              context,
+                              existingCategory: cat,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: LinearProgressIndicator(
+                          value: percentSpent.clamp(0.0, 1.0),
+                          backgroundColor:
+                              theme.colorScheme.surfaceContainerHighest,
+                          color: progressColor,
+                          minHeight: 10,
                         ),
-                        Text(
-                          '${currencyFormatter.format(cat.spentAmount)} / ${currencyFormatter.format(cat.budgetedAmount)}',
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.edit,
-                            size: 18,
-                            color: Colors.blueGrey,
-                          ),
-                          constraints:
-                              const BoxConstraints(), // Keeps the icon tight to the text
-                          padding: const EdgeInsets.only(left: 8.0),
-                          onPressed: () => _showCategoryDialog(
-                            context,
-                            existingCategory: cat,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    LinearProgressIndicator(
-                      value: percentSpent.clamp(0.0, 1.0),
-                      backgroundColor: Colors.grey.withOpacity(0.2),
-                      color: progressColor,
-                      minHeight: 8,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -184,12 +242,29 @@ void _showCategoryDialog(
         children: [
           TextField(
             controller: nameController,
-            decoration: const InputDecoration(labelText: 'Category Name'),
+            decoration: InputDecoration(
+              labelText: 'Category Name',
+              filled: true,
+              fillColor: Theme.of(ctx).colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+            ),
           ),
+          const SizedBox(height: 12),
           TextField(
             controller: budgetController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(labelText: 'Budget Limit'),
+            decoration: InputDecoration(
+              labelText: 'Budget Limit',
+              filled: true,
+              fillColor: Theme.of(ctx).colorScheme.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+            ),
           ),
         ],
       ),

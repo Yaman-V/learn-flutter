@@ -25,7 +25,6 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Budget Prototype'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             icon: Icon(
@@ -39,6 +38,8 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: _tabs[_currentIndex],
       floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
+        elevation: 4,
         onPressed: () {
           Navigator.push(
             context,
@@ -51,16 +52,37 @@ class _MainScreenState extends State<MainScreen> {
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Budget'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Transactions',
-          ),
-        ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 18,
+              offset: const Offset(0, -6),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) => setState(() => _currentIndex = index),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          selectedIconTheme: const IconThemeData(size: 28),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.pie_chart_rounded),
+              label: 'Budget',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.receipt_long_rounded),
+              label: 'Transactions',
+            ),
+          ],
+        ),
       ),
     );
   }
