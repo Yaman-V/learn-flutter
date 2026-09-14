@@ -17,10 +17,22 @@ class BudgetPrototypeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<BudgetState>(); // Watch the state here
     return MaterialApp(
       title: 'Budget Prototype',
+      themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.teal,
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.teal,
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
       ),
       home: const MainScreen(),

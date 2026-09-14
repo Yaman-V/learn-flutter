@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wallet_app/state/budget_state.dart';
 import 'budget_overview_tab.dart';
 import 'transaction_list_tab.dart';
 import 'add_transaction_screen.dart';
@@ -24,6 +26,16 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: const Text('Budget Prototype'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            icon: Icon(
+              context.watch<BudgetState>().isDarkMode
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: () => context.read<BudgetState>().toggleTheme(),
+          ),
+        ],
       ),
       body: _tabs[_currentIndex],
       floatingActionButton: FloatingActionButton(
@@ -43,10 +55,7 @@ class _MainScreenState extends State<MainScreen> {
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart),
-            label: 'Budget',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Budget'),
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: 'Transactions',
