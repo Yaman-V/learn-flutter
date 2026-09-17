@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:super_store/models/product.dart';
+import 'package:super_store/screens/product_list_screen.dart';
 import 'package:super_store/services/product_service.dart';
 
 void main() async {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: ProductListScreen());
+  }
+}
+
+// ******************** Tests ******************
+// Service (API) test
+void serviceTest() async {
   final service = ProductService();
 
   try {
@@ -15,8 +31,6 @@ void main() async {
   } catch (e) {
     print(e);
   }
-
-  runApp(const MyApp());
 }
 
 // Hardcoded test for the model
@@ -38,18 +52,4 @@ void modelTest() {
 
   final myTestProduct = Product.fromJson(fakeApiData);
   print(myTestProduct);
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const Scaffold(
-        body: Center(child: Text('Super Store, Placeholder')),
-      ),
-    );
-  }
 }
