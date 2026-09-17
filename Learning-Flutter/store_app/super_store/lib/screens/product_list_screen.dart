@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:super_store/models/product.dart';
+import 'package:super_store/screens/product_detail_screen.dart';
 import 'package:super_store/services/product_service.dart';
 
 class ProductListScreen extends StatefulWidget {
@@ -68,50 +69,59 @@ class _ProductGrid extends StatelessWidget {
       itemCount: productList.length,
       itemBuilder: (context, index) {
         final product = productList[index];
-        return Card(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadiusGeometry.circular(8),
+        return InkWell(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ProductDetailScreen(product: product),
+            ),
+          ),
 
-                  child: Container(
-                    width: double.infinity,
-                    color: Colors.grey, // placholder
-                    child: Image.network(product.thumbnail),
+          child: Card(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(8),
+
+                    child: Container(
+                      width: double.infinity,
+                      color: Colors.grey, // placholder
+                      child: Image.network(product.thumbnail),
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  product.title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    product.title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      product.price.toString(),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        product.price.toString(),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
 
-                    ElevatedButton(onPressed: () {}, child: Text('Buy')),
-                  ],
+                      ElevatedButton(onPressed: () {}, child: Text('Buy')),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
