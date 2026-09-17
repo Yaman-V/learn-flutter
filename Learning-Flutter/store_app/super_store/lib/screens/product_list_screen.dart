@@ -80,7 +80,7 @@ class _ProductGrid extends StatelessWidget {
                   child: Container(
                     width: double.infinity,
                     color: Colors.grey, // placholder
-                    child: Image.network(product.images[0]),
+                    child: Image.network(product.thumbnail),
                   ),
                 ),
               ),
