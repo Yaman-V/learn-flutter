@@ -11,6 +11,7 @@ class Product {
   final List<String> tags;
   final String? brand;
   final String availabilityStatus;
+  double stock;
   final String returnPolicy;
   final List<String> images;
   final String thumbnail;
@@ -25,6 +26,7 @@ class Product {
     required this.tags,
     required this.brand,
     required this.availabilityStatus,
+    required this.stock,
     required this.returnPolicy,
     required this.images,
     required this.thumbnail,
@@ -41,6 +43,7 @@ class Product {
       tags: json['tags'].cast<String>(),
       brand: json['brand'],
       availabilityStatus: json['availabilityStatus'],
+      stock: json['stock'].toDouble(),
       returnPolicy: json['returnPolicy'],
       images: json['images'].cast<String>(),
       thumbnail: json['thumbnail'],
