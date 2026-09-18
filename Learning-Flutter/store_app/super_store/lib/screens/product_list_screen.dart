@@ -88,7 +88,7 @@ class _ProductGrid extends StatelessWidget {
 
                     child: Container(
                       width: double.infinity,
-                      color: Colors.grey, // placholder
+                      color: const Color.fromARGB(131, 239, 239, 239),
                       child: Image.network(product.thumbnail),
                     ),
                   ),
