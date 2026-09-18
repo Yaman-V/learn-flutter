@@ -10,6 +10,7 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  // Some logic and state (Kept in parent)
   int _quantity = 1;
 
   void _increment() {
@@ -32,138 +33,83 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
+      extendBody: true,
+      body: Stack(
         children: [
-          SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.5,
-            width: double.infinity,
-            child: Image.network(widget.product.images[0], fit: BoxFit.cover),
-          ),
-          const SizedBox(height: 20),
-
-          Text(
-            widget.product.title,
-            style: const TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1A1A1A),
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: 10),
-
-          Row(
+          ListView(
+            padding: EdgeInsets.zero,
             children: [
-              const Icon(Icons.star, color: Colors.amber, size: 20),
-              const SizedBox(width: 4),
-              Text(
-                widget.product.rating.toString(),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text('|', style: TextStyle(color: Colors.grey)),
-              ),
-              Text(
-                'By ${widget.product.brand}',
-                style: const TextStyle(decoration: TextDecoration.underline),
-              ),
-              const Spacer(),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(24.0),
-                  border: Border.all(color: Colors.grey[300]!, width: 1),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+              _ProductHeroImage(widget: widget),
+              // dont wrap the image with padding so it is edge-to-edge.
+              // Wrap the rest of the content inside Padding
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        bottomLeft: Radius.circular(24),
-                      ),
-                      onTap: _decrement,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 8.0,
+                    const SizedBox(height: 4),
+                    _ProductTitle(widget: widget),
+
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        _ProductRatingsAndBrand(widget: widget),
+
+                        const Spacer(),
+                        _QuantitySelector(
+                          quantity: _quantity,
+                          onIncrement: _increment,
+                          onDecrement: _decrement,
                         ),
-                        child: Icon(
-                          Icons.remove,
-                          size: 18,
-                          color: Colors.black87,
-                        ),
-                      ),
+                      ],
                     ),
-                    Container(width: 1, height: 20, color: Colors.grey[300]),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: SizedBox(
-                        width: 24,
-                        child: Text(
-                          '$_quantity',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    Container(width: 1, height: 20, color: Colors.grey[300]),
-                    InkWell(
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(24),
-                        bottomRight: Radius.circular(24),
-                      ),
-                      onTap: _increment,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 8.0,
-                        ),
-                        child: Icon(Icons.add, size: 18, color: Colors.black87),
-                      ),
-                    ),
+
+                    const SizedBox(height: 24),
+                    _ProductDescription(widget: widget),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          const Text(
-            'Description',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            widget.product.description,
-            style: const TextStyle(height: 1.5, color: Colors.black87),
-          ),
-          const SizedBox(height: 80),
+          const _BackArrow(),
         ],
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            ),
-          ],
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+      bottomNavigationBar: _CheckoutBottomBar(
+        widget: widget,
+        quantity: _quantity,
+      ),
+    );
+  }
+}
+
+class _CheckoutBottomBar extends StatelessWidget {
+  const _CheckoutBottomBar({
+    super.key,
+    required this.widget,
+    required this.quantity,
+  });
+
+  final ProductDetailScreen widget;
+  final int quantity;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+              ),
+            ],
+            borderRadius: BorderRadius.circular(30),
           ),
-        ),
-        child: SafeArea(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -176,7 +122,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   Text(
-                    '\$${(widget.product.price * _quantity).toStringAsFixed(2)}',
+                    '\$${(widget.product.price * quantity).toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -206,6 +152,191 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _BackArrow extends StatelessWidget {
+  const _BackArrow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 0,
+      left: 0,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: CircleAvatar(
+            backgroundColor: const Color.fromARGB(255, 239, 239, 239),
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                size: 20,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProductDescription extends StatelessWidget {
+  const _ProductDescription({super.key, required this.widget});
+
+  final ProductDetailScreen widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Description',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          widget.product.description,
+          style: const TextStyle(height: 1.5, color: Colors.black87),
+        ),
+        const SizedBox(height: 150),
+      ],
+    );
+  }
+}
+
+class _ProductRatingsAndBrand extends StatelessWidget {
+  const _ProductRatingsAndBrand({super.key, required this.widget});
+
+  final ProductDetailScreen widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Icon(Icons.star, color: Colors.amber, size: 20),
+        const SizedBox(width: 4),
+        Text(
+          widget.product.rating.toString(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text('|', style: TextStyle(color: Colors.grey)),
+        ),
+        Text(
+          'By ${widget.product.brand}',
+          style: const TextStyle(decoration: TextDecoration.underline),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProductTitle extends StatelessWidget {
+  const _ProductTitle({super.key, required this.widget});
+
+  final ProductDetailScreen widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      widget.product.title,
+      style: const TextStyle(
+        fontSize: 24.0,
+        fontWeight: FontWeight.bold,
+        color: Color(0xFF1A1A1A),
+        letterSpacing: -0.5,
+      ),
+    );
+  }
+}
+
+class _ProductHeroImage extends StatelessWidget {
+  const _ProductHeroImage({super.key, required this.widget});
+
+  final ProductDetailScreen widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.sizeOf(context).height * 0.5,
+      width: double.infinity,
+      child: Image.network(widget.product.images[0], fit: BoxFit.cover),
+    );
+  }
+}
+
+class _QuantitySelector extends StatelessWidget {
+  final int quantity;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
+
+  const _QuantitySelector({
+    super.key,
+    required this.quantity,
+    required this.onIncrement,
+    required this.onDecrement,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(color: Colors.grey[300]!, width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(24),
+              bottomLeft: Radius.circular(24),
+            ),
+            onTap: onDecrement,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Icon(Icons.remove, size: 18, color: Colors.black87),
+            ),
+          ),
+          Container(width: 1, height: 20, color: Colors.grey[300]),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SizedBox(
+              width: 24,
+              child: Text(
+                '$quantity',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          Container(width: 1, height: 20, color: Colors.grey[300]),
+          InkWell(
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(24),
+              bottomRight: Radius.circular(24),
+            ),
+            onTap: onIncrement,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Icon(Icons.add, size: 18, color: Colors.black87),
+            ),
+          ),
+        ],
       ),
     );
   }
