@@ -3,11 +3,8 @@ class Product {
   final String title;
   final String description;
   final String category;
-  // Price and rating are not mutable by design.
-  // Howeever, it may be better to be mutable and add methods `discountPercentage` and calcolate at the cart logic.
-  // I will keep this in mind for later.
-  double price;
-  double rating;
+  final double price;
+  final double rating;
   final List<String> tags;
   final String? brand;
   final String availabilityStatus;

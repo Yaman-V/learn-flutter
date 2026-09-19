@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:super_store/models/cart_item.dart';
 import 'package:super_store/models/product.dart';
+import 'package:super_store/providers/cart_provider.dart';
 import 'package:super_store/screens/product_detail_screen.dart';
 import 'package:super_store/services/product_service.dart';
 
@@ -21,7 +24,15 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Super Store')),
+      appBar: AppBar(
+        title: const Text('Super Store'),
+
+        actions: [
+          // Not sure of the name!
+          _GoToCartIcon(),
+        ],
+      ),
+
       body: Center(
         child: FutureBuilder<List<Product>>(
           future: products,
@@ -47,6 +58,51 @@ class _ProductListScreenState extends State<ProductListScreen> {
             return Text('No data here ....');
           },
         ),
+      ),
+    );
+  }
+}
+
+class _GoToCartIcon extends StatelessWidget {
+  const _GoToCartIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cartProvider = context.watch<CartProvider>();
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 16),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          IconButton(
+            onPressed: () {
+              // Go to cart screen
+            },
+            icon: const Icon(Icons.shopping_cart),
+          ),
+
+          Positioned(
+            right: 4,
+            top: 2,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                cartProvider.cartItems.length
+                    .toString(), // Your cart number here
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -116,7 +172,14 @@ class _ProductGrid extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
 
-                      ElevatedButton(onPressed: () {}, child: Text('Buy')),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<CartProvider>().addItem(
+                            CartItem(product: product, quantity: 1),
+                          );
+                        },
+                        child: Icon(Icons.add_shopping_cart_rounded),
+                      ),
                     ],
                   ),
                 ),

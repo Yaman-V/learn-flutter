@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:super_store/models/product.dart';
+import 'package:super_store/providers/cart_provider.dart';
 import 'package:super_store/screens/product_list_screen.dart';
 import 'package:super_store/services/product_service.dart';
 
 void main() async {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CartProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
