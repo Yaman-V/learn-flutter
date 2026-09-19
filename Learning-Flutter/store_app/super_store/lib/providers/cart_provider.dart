@@ -14,7 +14,6 @@ class CartProvider extends ChangeNotifier {
         item.quantity += cartItem.quantity;
         notifyListeners();
         // I added a print statment to help me debug, but I feel there must be away to debug bette?
-        print('added a new Item');
 
         return;
       }
@@ -22,7 +21,6 @@ class CartProvider extends ChangeNotifier {
 
     _cartItems.add(cartItem);
     notifyListeners();
-    print('added a new Item');
   }
 
   void removeItem(Product product) {
@@ -35,7 +33,6 @@ class CartProvider extends ChangeNotifier {
           item.quantity -= 1;
         }
         notifyListeners();
-        print('removed an Item');
 
         return;
       }

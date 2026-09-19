@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element_parameter
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:super_store/models/cart_item.dart';
